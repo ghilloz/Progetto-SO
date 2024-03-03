@@ -1,1 +1,0 @@
-fottuto cazzone
