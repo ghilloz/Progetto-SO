@@ -5,19 +5,8 @@
 #include <stdio.h>
 #include "pfc.h"
 
-#define X 1
+#define X 10
 
-void Mfork (struct PFC *child) {
-  child->pid = fork();
-  if (child->pid < 0) {perror("[-] Fork Failed\n"); _exit(-1);}
-  else if (child->pid > 0) return; 
-  else {
-    close(child->pipe_in[1]);
-    close(child->pipe_out[0]);
-    child->routine(child);
-    kill(getpid(), SIGINT);
-  }
-}
 
 void fn(struct PFC *p) {
   int out = getpid(),
