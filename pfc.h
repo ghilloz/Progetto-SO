@@ -19,12 +19,10 @@ struct PFC {
   int *pipe_in;         //process input pipe (read)
   int *pipe_out;        //process output pipe (write)
 };
-void routine () {
-  printf("ciao sono la routine\n");
-  fflush(stdout);
-  return;
-}
+
 // Directive type kill, change, mem_free, freeze process
+
+void routine ();
 void init_PFC (struct PFC *, int, pid_t, function, int *, int *);
 
 void Mfork (struct PFC *);
