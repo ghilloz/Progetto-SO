@@ -1,12 +1,8 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <sys/wait.h>
+
 #include <stdio.h>
 #include "pfc.h"
 
 #define X 10
-
 
 void fn(struct PFC *p) {
   int out = getpid(),
@@ -27,12 +23,12 @@ int main () {
     perror("[-] Pipe creation failed");
     exit(-1);
   }
+
   
   for (int i = 0; i < X; i++) {
     printf("Creazione figlio %d\n", i);
     
     child[i].id = i;
-    child[i].routine = fn;
 
     if (pipe(c_pipes[i]) == -1) {
       perror("[-] Pipe creation failed");
@@ -43,10 +39,15 @@ int main () {
     child[i].pipe_in = c_pipes[i];
     child[i].pipe_out = m_pipe;
     Mfork(&child[i]);
-    close(c_pipes[i][0]);
-    printf("Figlio creato | pid %d | id %d | logic_add %p\n", child[i].pid, child[i].id, &(child[i].id));
+
+    int signal = SIG_ABORT;  
+      getchar();
+      write(c_pipes[i][1], (int*)&signal, sizeof(int));
+    /*
+      printf("Figlio creato | pid %d | id %d | logic_add %p\n", child[i].pid, child[i].id, &(child[i].id)); */
   }
 
+  /*
   close(m_pipe[1]);
   for (int i = 0; i < X;) {
     int buf, bytes, out = 1;
@@ -61,7 +62,7 @@ int main () {
   int stat_loc, tmp;
   while ((tmp = wait(&stat_loc)) != -1)
     printf("%d\n", tmp);
-  
+  */
 
   return (0);
 }
