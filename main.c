@@ -1,8 +1,8 @@
-
 #include <stdio.h>
 #include "pfc.h"
 
 #define X 10
+
 
 void fn(struct PFC *p) {
   int out = getpid(),
@@ -13,6 +13,7 @@ void fn(struct PFC *p) {
   write(p->pipe_out[1], (const void*)&out, sizeof(int));
   read(p->pipe_in[0], (void*)&in, sizeof(int));
 }
+
 
 int main () {
   struct PFC child[X];
@@ -35,14 +36,16 @@ int main () {
       exit(-1);
     }
     
-    
     child[i].pipe_in = c_pipes[i];
     child[i].pipe_out = m_pipe;
     Mfork(&child[i]);
-
-    int signal = SIG_ABORT;  
+    close(m_pipe[1]);
+    close(child[i].pipe_in[0]);
+    
+    int signal = SIG_ROUTINE;
       getchar();
       write(c_pipes[i][1], (int*)&signal, sizeof(int));
+      write(c_pipes[i][1], (function)&routine, sizeof(function));
     /*
       printf("Figlio creato | pid %d | id %d | logic_add %p\n", child[i].pid, child[i].id, &(child[i].id)); */
   }

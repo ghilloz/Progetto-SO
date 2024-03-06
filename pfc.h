@@ -10,15 +10,21 @@
 #define SIG_FREEZE 1
 #define SIG_ROUTINE 2
 
+typedef void (*function) ();
+
 struct PFC {
   int id;
   pid_t pid;                         
-  void (*routine)();    //process routine function ptr
+  function routine;    //process routine function ptr
   int *pipe_in;         //process input pipe (read)
   int *pipe_out;        //process output pipe (write)
 };
-
+void routine () {
+  printf("ciao sono la routine\n");
+  fflush(stdout);
+  return;
+}
 // Directive type kill, change, mem_free, freeze process
-void init_PFC (struct PFC *, int, pid_t, void *, int *, int *);
+void init_PFC (struct PFC *, int, pid_t, function, int *, int *);
 
 void Mfork (struct PFC *);
