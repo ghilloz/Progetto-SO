@@ -19,18 +19,12 @@ void Mfork(struct PFC *child) {
 
       int signal;
       while (true) {
-	printf("sono il figlio aspetto un segnale..\n");
+	read(child->pipe_in[0], (int*)&signal, sizeof(int));
+	printf("Ho letto la pipe!\n");
 	fflush(stdout);
-   	while(read(child->pipe_in[0], (int*)&signal, sizeof(int)) <= 0);
-	       printf("segnale ricevuto %d\n", signal);
-	       fflush(stdout);
           switch (signal) {
 	      case (SIG_ROUTINE):
-		function r;
-		read(child->pipe_in[0], (function*)&r, 8);
-           	printf("Figlio: %p\n", r);
-                fflush(stdout);
-		child->routine = (function)routine;
+		read(child->pipe_in[0], (function*)&child->routine, 8);
 		child->routine();
 		break;
               case (SIG_ABORT): kill(getpid(), SIGINT); break;
@@ -39,3 +33,4 @@ void Mfork(struct PFC *child) {
       }
   }
 }
+

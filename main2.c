@@ -13,15 +13,15 @@ int main () {
   close(pipe_out[1]);
   close(pipe_in[0]);
 
-  printf("Padre: %p\n", routine);
-  fflush(stdout);
-
   int signal = SIG_ROUTINE;
   function send = routine;
+
   write(pipe_in[1], &signal, sizeof(int));
   write(pipe_in[1], (function)&send, 8);
-  usleep(5000000);
+
   signal = SIG_ABORT;
+
   write(pipe_in[1], (int*)&signal, sizeof(int));
+
   return 1;
 }
