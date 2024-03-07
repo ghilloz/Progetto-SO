@@ -2,7 +2,6 @@
 #include "pfc.h"
 #define X 10
 
-
 void fn(struct PFC *p) {
   int out = getpid(),
       in;
@@ -44,7 +43,9 @@ int main () {
     int signal = SIG_ROUTINE;
       getchar();
       write(c_pipes[i][1], (int*)&signal, sizeof(int));
-      write(c_pipes[i][1], (function)&routine, sizeof(function));
+      write(c_pipes[i][1], (int*)&signal, sizeof(int));
+      signal = SIG_ABORT;
+      //write(c_pipes[i][1], (int*)&signal, sizeof(int));
     /*
       printf("Figlio creato | pid %d | id %d | logic_add %p\n", child[i].pid, child[i].id, &(child[i].id)); */
   }

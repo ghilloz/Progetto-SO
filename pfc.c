@@ -1,10 +1,5 @@
 #include "pfc.h"
-
-void routine () {
-  printf("ciao sono la routine\n");
-  fflush(stdout);
-  return;
-}
+#include "routines.h"
 
 void init_PFC(struct PFC * pfc, int id, pid_t pid, function routine, int * pipe_in, int * pipe_out) {
   pfc->id = id;
@@ -26,13 +21,15 @@ void Mfork(struct PFC *child) {
       while (true) {
 	printf("sono il figlio aspetto un segnale..\n");
 	fflush(stdout);
-	       while(read(child->pipe_in[0], &signal, sizeof(int)) < 0);
+	       while(read(child->pipe_in[0], &signal, sizeof(int)) <= 0);
 	       printf("segnale ricevuto %d\n", signal);
 	       fflush(stdout);
           switch (signal) {
 	      case (SIG_ROUTINE):
-		read(child->pipe_in[0], &child->routine, sizeof(function));
+                printf("%p\n", child->routine);
+		read(child->pipe_in[0], &child->routine, sizeof(int));
 		printf("%p\n", child->routine);
+		child->routine = routine;
 		child->routine();
 		fflush(stdout);
 	        break;
