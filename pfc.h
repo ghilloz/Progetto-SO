@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "routines.h"
 
 #define SIG_ABORT 0
 #define SIG_FREEZE 1
