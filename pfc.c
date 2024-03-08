@@ -1,15 +1,13 @@
 #include "pfc.h"
 
-
-void init_PFC(struct PFC * pfc, int id, pid_t pid, function routine, int * pipe_in, int * pipe_out) {
+void init_PFC(PFC * pfc, int id, int * pipe_in, int * pipe_out) {
   pfc->id = id;
-  pfc->pid = pid;
   pfc->routine = routine;
   pfc->pipe_in = pipe_in;
   pfc->pipe_out = pipe_out;
 }
 
-void Mfork(struct PFC *child) {
+void Mfork(PFC *child) {
   child->pid = fork();
   if (child->pid < 0) {perror("[-] Fork Failed\n"); _exit(-1);}
   else if (child->pid > 0) return; 
@@ -17,18 +15,20 @@ void Mfork(struct PFC *child) {
       close(child->pipe_in[1]);
       close(child->pipe_out[0]);
 
-      int signal;
+      Signal signal;
       while (true) {
-	read(child->pipe_in[0], (int*)&signal, sizeof(int));
-	printf("Ho letto la pipe!\n");
-	fflush(stdout);
-          switch (signal) {
+	  read(child->pipe_in[0], (Signal*)&signal, sizeof(Signal));
+	  printf("Segnale ricevuto : %d  %p", signal.type, signal.routine);
+	  fflush(stdout);
+	  child->routine = signal.routine;
+          switch (signal.type) {
 	      case (SIG_ROUTINE):
-		read(child->pipe_in[0], (function*)&child->routine, 8);
-		child->routine();
-		break;
-              case (SIG_ABORT): kill(getpid(), SIGINT); break;
-       	      case (SIG_FREEZE): break;
+		  child->routine();
+		  break;
+              case (SIG_ABORT):
+		  kill(getpid(), SIGINT);
+		  break;
+	  case (SIG_FREEZE): break;
           }
       }
   }

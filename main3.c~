@@ -1,6 +1,0 @@
-#include "stdlib.h"
-
-int main () {
-  int pipe_fd[2];
-  pipe2(pipe_fd, 0);
-}
