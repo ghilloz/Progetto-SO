@@ -1,7 +1,0 @@
-#include "signals.h"
-
-Signal init_signal (int type, function* fun/* 2DO */) {
-  Signal s =  {type,*fun};
-  printf("%d  %p", s.type, s.routine);
-  return s;
-}

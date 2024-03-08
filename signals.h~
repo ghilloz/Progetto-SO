@@ -1,9 +1,0 @@
-#include "functions.h"
-
-typedef struct {
-    int type;
-    function routine;
-    // 2DO
-} Signal;
-
-Signal init_signal(int, function*);
